@@ -7,12 +7,13 @@ import (
 )
 
 func Router(e *echo.Echo) {
-	ndea := new(controller.Controller)
-	e.GET("/Products-", ndea.GetProductsBy)
-	e.GET("/Products", ndea.GetProducts)
-	e.DELETE("/Product", ndea.DeleteProduct)
-	e.GET("/Product", ndea.GetProduct)
-	e.POST("/Product", ndea.PostProduct)
-	e.POST("/Products", ndea.InserMany)
-	e.GET("/DB", ndea.Connection)
+	router := new(controller.Controller)
+	e.GET("/Product", router.GetProduct)
+	e.GET("/Products", router.GetProducts)
+	e.GET("/Products-", router.GetProductsBy)
+	e.POST("/Product", router.PostProduct)
+	e.POST("/Products", router.InserMany)
+	e.GET("/DB", router.Connection)
+	e.PUT("/Product", router.UpdateOne)
+	e.DELETE("/Product", router.DeleteProduct)
 }

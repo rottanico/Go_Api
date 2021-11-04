@@ -58,7 +58,7 @@ func (r *Controller) PostProduct(c echo.Context) error {
 		coll.CollectionProduct.InsertOne(context.TODO(), &p)
 		return c.JSON(http.StatusOK, p)
 	} else {
-		return c.JSON(http.StatusBadRequest, bson.D{{"errror", "valor no encontrado"}})
+		return c.String(http.StatusBadRequest, "valor no encontrado")
 	}
 
 }
@@ -119,13 +119,20 @@ func (r *Controller) GetProductsBy(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 func (r *Controller) InserMany(c echo.Context) error {
-	// Products := new([]coll.Product)
-	archivo, err := c.FormFile("file")
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
-	}
-	src, _ := archivo.Open()
-	defer src.Close()
+	var Products []interface{}
+	err := c.Bind(&Products)
 
-	return c.JSON(http.StatusOK, src)
+	if err != nil {
+		c.Logger().Error(err)
+		return c.JSON(http.StatusRequestTimeout, err)
+	}
+	result, errr := coll.CollectionProduct.InsertMany(context.TODO(), Products)
+	if errr != nil {
+		c.Logger().Error(errr)
+		return c.JSON(http.StatusRequestTimeout, errr)
+	}
+	return c.JSON(http.StatusOK, result)
+}
+func (r *Controller) UpdateOne(c echo.Context) error {
+	return c.String(http.StatusMethodNotAllowed, "in process")
 }
