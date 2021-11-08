@@ -133,6 +133,26 @@ func (r *Controller) InserMany(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, result)
 }
-func (r *Controller) UpdateOne(c echo.Context) error {
-	return c.String(http.StatusMethodNotAllowed, "in process")
+func (r *Controller) UpdateStock(c echo.Context) error {
+	Id := c.QueryParam("id")
+	id, err := primitive.ObjectIDFromHex(Id)
+	var stock int64
+	if len(c.QueryParam("stock")) != 0 {
+		stock, _ = strconv.ParseInt(c.QueryParam("stock"), 10, 64)
+	} else {
+		return c.String(http.StatusPreconditionFailed, "Stock is necessary")
+	}
+	if err != nil {
+		c.Logger().Error(err)
+		return c.JSON(http.StatusRequestTimeout, err)
+	}
+
+	filter := bson.M{"_id": id}
+	update := bson.D{{"$set", bson.D{{"stock", stock}}}}
+	result, errr := coll.CollectionProduct.UpdateOne(context.Background(), filter, update)
+	if errr != nil {
+		c.Logger().Error(errr)
+		return c.JSON(http.StatusRequestTimeout, errr)
+	}
+	return c.JSON(http.StatusMethodNotAllowed, result)
 }
