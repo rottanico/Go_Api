@@ -15,5 +15,6 @@ func Router(e *echo.Echo) {
 	e.POST("/Products", router.InserMany)
 	e.GET("/DB", router.Connection)
 	e.PUT("/Product", router.UpdateStock)
+	e.PUT("/Product-", router.UpdateProduct)
 	e.DELETE("/Product", router.DeleteProduct)
 }
